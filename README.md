@@ -2,7 +2,17 @@
 
 **Course:** GIX — Week 5  
 **Student:** Lisa  
-**Stack:** Next.js 14 (App Router) · Tailwind CSS · Supabase (PostgreSQL)
+**Stack:** Next.js 14 (App Router) · Tailwind CSS · Supabase (PostgreSQL)  
+**Lab Manual:** [lab-manual.md](./lab-manual.md)
+
+---
+
+## Live Deployments
+
+| App | URL |
+|-----|-----|
+| GIX Equipment Returns | [lab-5-pi.vercel.app](https://lab-5-pi.vercel.app) |
+| GIX Events | [lab-5-event.vercel.app](https://lab-5-event.vercel.app) |
 
 ---
 
@@ -20,6 +30,8 @@ This repo contains two separate full-stack Next.js applications built for Week 5
 ## Apps
 
 ### `gix-equipment` — Component B
+
+**Live:** [lab-5-pi.vercel.app](https://lab-5-pi.vercel.app)
 
 An internal tool for GIX operations staff to manage equipment returns. Replaces the manual process of checking items one by one against a purchase list.
 
@@ -41,6 +53,8 @@ npm run dev
 ---
 
 ### `gix-events` — Component E
+
+**Live:** [lab-5-event.vercel.app](https://lab-5-event.vercel.app)
 
 A public-facing events board for GIX community members to browse upcoming events.
 
