@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GIX Events
+
+A Next.js app that displays upcoming GIX events — guest lectures, workshops, and career panels — fetched from Supabase and browsable with category filters.
+
+Built for **Week 5 Lab — Component E**.
+
+---
+
+## Features
+
+- Fetches events from Supabase `events` table
+- Category filter pills: All / guest_lecture / workshop / career
+- Event cards showing title, description, date, location, and category badge
+- GIX brand colors (#39275B dark purple, #DFDDE8 lavender background)
+- 3 error scenarios handled gracefully (see below)
+- 2 assert statements for contract validation
+- Mobile responsive — cards stack vertically on narrow screens
+
+---
+
+## Tech Stack
+
+- Next.js 14 (App Router)
+- Tailwind CSS
+- Supabase JS client (`@supabase/supabase-js`)
+
+---
 
 ## Getting Started
 
-First, run the development server:
+1. Create a `.env.local` file in this directory:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies and run:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. Open [http://localhost:3000](http://localhost:3000)
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Supabase Schema
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```sql
+CREATE TABLE events (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  title text NOT NULL,
+  description text,
+  category text,
+  location text,
+  event_date timestamp,
+  created_at timestamp DEFAULT now()
+);
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+RLS is enabled with a public read policy:
 
-## Deploy on Vercel
+```sql
+CREATE POLICY "Allow public read access"
+ON events FOR SELECT USING (true);
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Error Handling
+
+| Scenario | How the app responds |
+|----------|---------------------|
+| Supabase fetch fails (bad URL or network error) | Red error banner: "Failed to load events. Please check your connection and try again." |
+| No events in table or filter returns no results | Empty state with calendar icon and context-aware message |
+| Event row missing required `title` field | Card is skipped silently; yellow warning shows how many were skipped |
+
+---
+
+## Assert Statements
+
+Located in `app/page.tsx`, run after every successful Supabase fetch:
+
+```typescript
+console.assert(Array.isArray(data), "Events response should be an array");
+console.assert(data?.[0]?.title !== undefined, "Each event should have a title field");
+```
+
+---
+
+## Security
+
+- Supabase credentials stored in `.env.local` only — never hardcoded
+- `.env.local` is excluded from git via `.gitignore`
+- Supabase RLS enabled — anon key can only read, not write or delete
