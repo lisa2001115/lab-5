@@ -37,6 +37,8 @@ export default function Home() {
     if (fetchError) {
       setError("Failed to load items. Please check your connection and try again.");
     } else {
+      console.assert(Array.isArray(data), "Response should be an array");
+      console.assert(data?.[0]?.asset_name !== undefined, "Each item should have asset_name");
       setItems(data ?? []);
     }
     setLoading(false);
